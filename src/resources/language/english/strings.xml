@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <string id="30100">Load Megavideo premium links</string>
+    <string id="30101">Megavideo username:</string>
+    <string id="30102">Megavideo password:</string>
+    <string id="30200">Width of imdb covers to load:</string>
+    <string id="30201">Auto-reload listing on metadata update</string>
+    <string id="30202">Load episode covers</string>
+    <string id="30203">Load Tv show fanart</string>
+    <string id="30204">Don't query for metadata</string>
+    <string id="30205">Auto-load preferred source</string>
+    <string id="30206">Preferred source:</string>
+    <string id="30207">Preferred notification method:</string>
+    <string id="30208">Filter unsupported sources</string>
+    <string id="30209">Group category lists by letter</string>
+    <string id="general">General</string>
+    <string id="metadata">Metadata</string>
+    <string id="megavideo">Megavideo</string>
+</strings>

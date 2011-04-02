@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+  <category label="general">
+    <setting id="filter-unsupported-sources" type="bool" label="30208" default="true" />
+    <setting id="autoplay-preferred-source" type="bool" label="30205" default="false"/>
+    <setting id="preferred-source" type="text" label="30206" default="" />
+  <setting type="sep" />
+    <setting id="notification-method" type="enum" label="30207" values="native|off" default="0"/>
+    <setting id="group-categories-by-letter" type="bool" label="30209" default="0"/>
+  </category>
+  <category label="metadata">
+    <setting id="load-tv-fanart" type="bool" label="30203" default="false"/>
+    <setting id="load-episode-cover" type="bool" label="30202" default="false"/>
+    <setting id="autoreload-metadata-update" type="bool" label="30201" default="true"/>
+    <setting id="imdb-cover-size" type="integer" label="30200" default="182"/>
+    <setting id="metadata-query-skip" type="bool" label="30204" default="false"/>
+  </category>
+  <category label="megavideo">
+    <setting id="megavideopremium" type="bool" label="30100" default="false" />
+    <setting id="megavideouser" type="text" label="30101" default="" />
+    <setting id="megavideopassword" type="text" label="30102" default="" />
+  </category>
+</settings>
+

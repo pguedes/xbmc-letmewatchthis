@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="video.letmewatchthis" version="0" name="letmewatchthis.com" provider-name="Pedro Guedes, guedes.emigra@gmail.com">
+  <extension point="xbmc.python.pluginsource" library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>An add-on to view content from letmewatchthis.com</summary>
+    <description>This add-on allows to navigate the content made available by the
+      letmewatchthis.com website, while making it look nicely integrated with XBMC's UI.</description>
+    <disclaimer>Please configure this add-on's preferences. If you have space issues, deleting
+      the .cache folder may be a good first option (will reload)</disclaimer>
+    <platform>all</platform>
+  </extension>
+</addon>

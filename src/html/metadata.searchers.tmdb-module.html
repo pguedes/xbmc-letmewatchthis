@@ -1,0 +1,572 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>metadata.searchers.tmdb</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="metadata-module.html">Package&nbsp;metadata</a> ::
+        Package&nbsp;searchers ::
+        Module&nbsp;tmdb
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="metadata.searchers.tmdb-module.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== MODULE DESCRIPTION ==================== -->
+<h1 class="epydoc">Module tmdb</h1><p class="nomargin-top"><span class="codelink"><a href="metadata.searchers.tmdb-pysrc.html">source&nbsp;code</a></span></p>
+<p>An interface to the themoviedb.org API</p>
+
+<hr />
+<div class="fields">      <p><strong>Version:</strong>
+        0.2b
+      </p>
+      <p><strong>Author:</strong>
+        dbr/Ben
+      </p>
+</div><!-- ==================== CLASSES ==================== -->
+<a name="section-Classes"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Classes</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Classes"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="metadata.searchers.tmdb.TmdBaseError-class.html" class="summary-name">TmdBaseError</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="metadata.searchers.tmdb.TmdNoResults-class.html" class="summary-name">TmdNoResults</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="metadata.searchers.tmdb.TmdHttpError-class.html" class="summary-name">TmdHttpError</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="metadata.searchers.tmdb.TmdXmlError-class.html" class="summary-name">TmdXmlError</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="metadata.searchers.tmdb.XmlHandler-class.html" class="summary-name">XmlHandler</a><br />
+      Deals with retrieval of XML files from API
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="metadata.searchers.tmdb.SearchResults-class.html" class="summary-name">SearchResults</a><br />
+      Stores a list of Movie's that matched the search
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="metadata.searchers.tmdb.MovieResult-class.html" class="summary-name">MovieResult</a><br />
+      A dict containing the information about a specific search result
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="metadata.searchers.tmdb.Movie-class.html" class="summary-name">Movie</a><br />
+      A dict containing the information about the film
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="metadata.searchers.tmdb.Categories-class.html" class="summary-name">Categories</a><br />
+      Stores category information
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="metadata.searchers.tmdb.Studios-class.html" class="summary-name">Studios</a><br />
+      Stores category information
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="metadata.searchers.tmdb.Countries-class.html" class="summary-name">Countries</a><br />
+      Stores country information
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="metadata.searchers.tmdb.Image-class.html" class="summary-name">Image</a><br />
+      Stores image information for a single poster/backdrop (includes 
+        multiple sizes)
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="metadata.searchers.tmdb.ImagesList-class.html" class="summary-name">ImagesList</a><br />
+      Stores a list of Images, and functions to filter &quot;only 
+        posters&quot; etc
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="metadata.searchers.tmdb.CrewRoleList-class.html" class="summary-name">CrewRoleList</a><br />
+      Stores a list of roles, such as director, actor etc
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="metadata.searchers.tmdb.CrewList-class.html" class="summary-name">CrewList</a><br />
+      Stores list of crew in specific role
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="metadata.searchers.tmdb.Person-class.html" class="summary-name">Person</a><br />
+      Stores information about a specific member of cast
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="metadata.searchers.tmdb.MovieDb-class.html" class="summary-name">MovieDb</a><br />
+      Main interface to www.themoviedb.com
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTIONS ==================== -->
+<a name="section-Functions"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Functions</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Functions"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="metadata.searchers.tmdb-module.html#opensubtitleHashFile" class="summary-sig-name">opensubtitleHashFile</a>(<span class="summary-sig-arg">name</span>)</span><br />
+      Hashes a file using OpenSubtitle's method.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="metadata.searchers.tmdb-pysrc.html#opensubtitleHashFile">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="metadata.searchers.tmdb-module.html#search" class="summary-sig-name">search</a>(<span class="summary-sig-arg">name</span>)</span><br />
+      Convenience wrapper for MovieDb.search - so you can do..</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="metadata.searchers.tmdb-pysrc.html#search">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="metadata.searchers.tmdb-module.html#getMovieInfo" class="summary-sig-name">getMovieInfo</a>(<span class="summary-sig-arg">id</span>)</span><br />
+      Convenience wrapper for MovieDb.search - so you can do..</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="metadata.searchers.tmdb-pysrc.html#getMovieInfo">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="metadata.searchers.tmdb-module.html#hashGetInfo" class="summary-sig-name">hashGetInfo</a>(<span class="summary-sig-arg">hash</span>)</span><br />
+      Convenience wrapper for MovieDb.hashGetInfo - so you can do..</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="metadata.searchers.tmdb-pysrc.html#hashGetInfo">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="searchByHashingFile"></a><span class="summary-sig-name">searchByHashingFile</span>(<span class="summary-sig-arg">filename</span>)</span><br />
+      Searches for the specified file using the OpenSubtitle hashing method</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="metadata.searchers.tmdb-pysrc.html#searchByHashingFile">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="main"></a><span class="summary-sig-name">main</span>()</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="metadata.searchers.tmdb-pysrc.html#main">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== VARIABLES ==================== -->
+<a name="section-Variables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Variables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="metadata.searchers.tmdb-module.html#config" class="summary-name">config</a> = <code title="{'apikey': 'a8b9f96dde091408a03cb4c78477bd14',
+ 'urls': {'hash.getInfo': 'http://api.themoviedb.org/2.1/Hash.getInfo/\
+en/xml/a8b9f96dde091408a03cb4c78477bd14/%s',
+          'movie.getInfo': 'http://api.themoviedb.org/2.1/Movie.getInf\
+o/en/xml/a8b9f96dde091408a03cb4c78477bd14/%s',
+          'movie.search': 'http://api.themoviedb.org/2.1/Movie.search/\
+en/xml/a8b9f96dde091408a03cb4c78477bd14/%s'}}"><code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">apikey</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">a8b9f96dde091408a03cb4c78477bd14</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">urls</code><code class="variable-quote">'</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="'metadata.searchers'"><code class="variable-quote">'</code><code class="variable-string">metadata.searchers</code><code class="variable-quote">'</code></code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== FUNCTION DETAILS ==================== -->
+<a name="section-FunctionDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Function Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-FunctionDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="opensubtitleHashFile"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">opensubtitleHashFile</span>(<span class="sig-arg">name</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="metadata.searchers.tmdb-pysrc.html#opensubtitleHashFile">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Hashes a file using OpenSubtitle's method.</p>
+  <p>&gt; In natural language it calculates: size + 64bit chksum of the 
+  first and &gt; last 64k (even if they overlap because the file is smaller
+  than 128k).</p>
+  <p>A slightly more Pythonic version of the Python solution on.. 
+  http://trac.opensubtitles.org/projects/opensubtitles/wiki/HashSourceCodes</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="search"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">search</span>(<span class="sig-arg">name</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="metadata.searchers.tmdb-pysrc.html#search">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Convenience wrapper for MovieDb.search - so you can do..</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span><span class="py-keyword">import</span> tmdb
+<span class="py-prompt">&gt;&gt;&gt; </span>tmdb.search(<span class="py-string">&quot;Fight Club&quot;</span>)
+<span class="py-output">&lt;Search results: [&lt;MovieResult: Fight Club (1999-09-16)&gt;]&gt;</span></pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="getMovieInfo"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">getMovieInfo</span>(<span class="sig-arg">id</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="metadata.searchers.tmdb-pysrc.html#getMovieInfo">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Convenience wrapper for MovieDb.search - so you can do..</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span><span class="py-keyword">import</span> tmdb
+<span class="py-prompt">&gt;&gt;&gt; </span>tmdb.getMovieInfo(187)
+<span class="py-output">&lt;MovieResult: Sin City (2005-04-01)&gt;</span></pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="hashGetInfo"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">hashGetInfo</span>(<span class="sig-arg">hash</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="metadata.searchers.tmdb-pysrc.html#hashGetInfo">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Convenience wrapper for MovieDb.hashGetInfo - so you can do..</p>
+<pre class="py-doctest">
+<span class="py-prompt">&gt;&gt;&gt; </span><span class="py-keyword">import</span> tmdb
+<span class="py-prompt">&gt;&gt;&gt; </span>tmdb.hashGetInfo(<span class="py-string">'00277ff46533b155'</span>)
+<span class="py-output">&lt;MovieResult: Willow (1988-05-20)&gt;</span></pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== VARIABLES DETAILS ==================== -->
+<a name="section-VariablesDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Variables Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-VariablesDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="config"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">config</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">apikey</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">a8b9f96dde091408a03cb4c78477bd14</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">urls</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">hash.getInfo</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">http://api.themoviedb.org/2.1/Hash.getInfo/</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">en/xml/a8b9f96dde091408a03cb4c78477bd14/%s</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+          <code class="variable-quote">'</code><code class="variable-string">movie.getInfo</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">http://api.themoviedb.org/2.1/Movie.getInf</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">o/en/xml/a8b9f96dde091408a03cb4c78477bd14/%s</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+          <code class="variable-quote">'</code><code class="variable-string">movie.search</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">http://api.themoviedb.org/2.1/Movie.search/</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">en/xml/a8b9f96dde091408a03cb4c78477bd14/%s</code><code class="variable-quote">'</code><code class="variable-group">}</code><code class="variable-group">}</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Fri Nov 12 07:40:35 2010
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
