@@ -3,7 +3,7 @@ Created on Jul 25, 2010
 
 @author: pedro
 '''
-import sys, xbmcplugin
+import sys, xbmcplugin #@UnresolvedImport
 
 def get(setting):
 #  return xbmcplugin.getSetting(setting);
