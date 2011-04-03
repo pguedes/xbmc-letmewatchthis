@@ -200,7 +200,7 @@ def get_series_details(series_id):
     soup = BeautifulStoneSoup(urllib2.urlopen(url).read())
     return _parse_series_actors(soup.data)
 
-def get_episode(episode_id):
+def get_episode_by_id(episode_id):
     """Returns details on a single episode"""
     url = "%sapi/%s/episodes/%s/%s.xml" % (BASE_URL, API_KEY, episode_id, _LANGUAGE)    
     soup = BeautifulStoneSoup(urllib2.urlopen(url).read())

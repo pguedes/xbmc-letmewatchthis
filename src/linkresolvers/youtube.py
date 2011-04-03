@@ -6,7 +6,7 @@ Created on Apr 6, 2010
 
 @author: pguedes
 '''
-from yt import GetYouTubeVideo
+from yt import GetYouTubeVideo #@UnresolvedImport
 import re, logging
 
 log = logging.getLogger('youtube')

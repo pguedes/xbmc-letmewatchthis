@@ -475,16 +475,18 @@ class Declaration(NavigableString):
     def __str__(self, encoding=DEFAULT_OUTPUT_ENCODING):
         return "<!%s>" % NavigableString.__str__(self, encoding)
 
+
+def _invert(h):
+    "Cheap function to invert a hash."
+    i = {}
+    for k,v in h.items():
+        i[v] = k
+    return i
+
 class Tag(PageElement):
 
     """Represents a found HTML tag with its attributes and contents."""
 
-    def _invert(h):
-        "Cheap function to invert a hash."
-        i = {}
-        for k,v in h.items():
-            i[v] = k
-        return i
 
     XML_ENTITIES_TO_SPECIAL_CHARS = { "apos" : "'",
                                       "quot" : '"',
@@ -1193,7 +1195,7 @@ class BeautifulStoneSoup(Tag, SGMLParser):
 
         if methodName.startswith('start_') or methodName.startswith('end_') \
                or methodName.startswith('do_'):
-            return SGMLParser.__getattr__(self, methodName)
+            return SGMLParser.__getattr__(self, methodName) #@UndefinedVariable
         elif not methodName.startswith('__'):
             return Tag.__getattr__(self, methodName)
         else:

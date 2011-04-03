@@ -125,7 +125,7 @@ class MetadataCache:
     def contains(self, entry, lookupEpisodes=True):
       '''
       Test if an item is in cache
-      For tv shows, returns true if a .tvshackmetadata-<TVSHOW>.cache file exists
+      For tv shows, returns true if a .tvmetadata-<TVSHOW>.cache file exists
       @param entry: the MetadataKey to check for 
       '''
       contained = self.__cache.has_key(entry.getKey())
