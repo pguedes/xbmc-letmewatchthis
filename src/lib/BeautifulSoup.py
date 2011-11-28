@@ -58,7 +58,7 @@ met:
     disclaimer in the documentation and/or other materials provided
     with the distribution.
 
-  * Neither the name of the the Beautiful Soup Consortium and All
+  * Neither the label of the the Beautiful Soup Consortium and All
     Night Kosher Bakery nor the names of its contributors may be
     used to endorse or promote products derived from this software
     without specific prior written permission.
@@ -341,11 +341,11 @@ class PageElement(object):
             return [element for element in generator()
                     if isinstance(element, Tag)]
 
-        # findAll*('tag-name')
+        # findAll*('tag-label')
         elif not limit and isinstance(name, basestring) and not attrs \
                 and not kwargs:
             return [element for element in generator()
-                    if isinstance(element, Tag) and element.name == name]
+                    if isinstance(element, Tag) and element.label == name]
 
         # Build a SoupStrainer
         else:
@@ -529,7 +529,7 @@ class Tag(PageElement):
         # chunks be garbage-collected
         self.parserClass = parser.__class__
         self.isSelfClosing = parser.isSelfClosingTag(name)
-        self.name = name
+        self.label = name
         if attrs is None:
             attrs = []
         self.attrs = attrs
@@ -654,14 +654,14 @@ class Tag(PageElement):
         raise AttributeError, "'%s' object has no attribute '%s'" % (self.__class__, tag)
 
     def __eq__(self, other):
-        """Returns true iff this tag has the same name, the same attributes,
+        """Returns true iff this tag has the same label, the same attributes,
         and the same contents (recursively) as the given tag.
 
         NOTE: right now this will return false if two tags have the
         same attributes in a different order. Should this be fixed?"""
         if other is self:
             return True
-        if not hasattr(other, 'name') or not hasattr(other, 'attrs') or not hasattr(other, 'contents') or self.name != other.name or self.attrs != other.attrs or len(self) != len(other):
+        if not hasattr(other, 'label') or not hasattr(other, 'attrs') or not hasattr(other, 'contents') or self.label != other.label or self.attrs != other.attrs or len(self) != len(other):
             return False
         for i in range(0, len(self.contents)):
             if self.contents[i] != other.contents[i]:
@@ -698,7 +698,7 @@ class Tag(PageElement):
         method is not certain to reproduce the whitespace present in
         the original string."""
 
-        encodedName = self.toEncoding(self.name, encoding)
+        encodedName = self.toEncoding(self.label, encoding)
 
         attrs = []
         if self.attrs:
@@ -831,14 +831,14 @@ class Tag(PageElement):
     def findAll(self, name=None, attrs={}, recursive=True, text=None,
                 limit=None, **kwargs):
         """Extracts a list of Tag objects that match the given
-        criteria.  You can specify the name of the Tag and any
+        criteria.  You can specify the label of the Tag and any
         attributes you want the Tag to have.
 
         The value of a key-value pair in the 'attrs' map can be a
         string, a list of strings, a regular expression object, or a
         callable that takes a string and returns whether or not the
         string matches for some custom definition of 'matches'. The
-        same is true of the tag name."""
+        same is true of the tag label."""
         generator = self.recursiveChildGenerator
         if not recursive:
             generator = self.childGenerator
@@ -887,7 +887,7 @@ class SoupStrainer:
     text)."""
 
     def __init__(self, name=None, attrs={}, text=None, **kwargs):
-        self.name = name
+        self.label = name
         if isinstance(attrs, basestring):
             kwargs['class'] = _match_css_class(attrs)
             attrs = None
@@ -904,7 +904,7 @@ class SoupStrainer:
         if self.text:
             return self.text
         else:
-            return "%s|%s" % (self.name, self.attrs)
+            return "%s|%s" % (self.label, self.attrs)
 
     def searchTag(self, markupName=None, markupAttrs={}):
         found = None
@@ -912,15 +912,15 @@ class SoupStrainer:
         if isinstance(markupName, Tag):
             markup = markupName
             markupAttrs = markup
-        callFunctionWithTagData = callable(self.name) \
+        callFunctionWithTagData = callable(self.label) \
                                 and not isinstance(markupName, Tag)
 
-        if (not self.name) \
+        if (not self.label) \
                or callFunctionWithTagData \
-               or (markup and self._matches(markup, self.name)) \
-               or (not markup and self._matches(markupName, self.name)):
+               or (markup and self._matches(markup, self.label)) \
+               or (not markup and self._matches(markupName, self.label)):
             if callFunctionWithTagData:
-                match = self.name(markupName, markupAttrs)
+                match = self.label(markupName, markupAttrs)
             else:
                 match = True
                 markupAttrMap = None
@@ -955,7 +955,7 @@ class SoupStrainer:
                        and self.search(element):
                     found = element
                     break
-        # If it's a Tag, make sure its name or attributes match.
+        # If it's a Tag, make sure its label or attributes match.
         # Don't bother with Tags if we're searching for text.
         elif isinstance(markup, Tag):
             if not self.text:
@@ -979,9 +979,9 @@ class SoupStrainer:
             result = matchAgainst(markup)
         else:
             #Custom match methods take the tag as an argument, but all
-            #other ways of matching match the tag name as a string.
+            #other ways of matching match the tag label as a string.
             if isinstance(markup, Tag):
-                markup = markup.name
+                markup = markup.label
             if markup and not isinstance(markup, basestring):
                 markup = unicode(markup)
             #Now we know that chunk is either a string, or None.
@@ -1097,7 +1097,7 @@ class BeautifulStoneSoup(Tag, SGMLParser):
         The default parser massage techniques fix the two most common
         instances of invalid HTML that choke sgmllib:
 
-         <br/> (No space between name of closing tag and tag close)
+         <br/> (No space between label of closing tag and tag close)
          <! --Comment--> (Extraneous whitespace in declaration)
 
         You can pass in a custom list of (RE object, replace method)
@@ -1185,12 +1185,12 @@ class BeautifulStoneSoup(Tag, SGMLParser):
         SGMLParser.feed(self, markup)
         # Close out any unfinished strings and close all the open tags.
         self.endData()
-        while self.currentTag.name != self.ROOT_TAG_NAME:
+        while self.currentTag.label != self.ROOT_TAG_NAME:
             self.popTag()
 
     def __getattr__(self, methodName):
         """This method routes method call requests to either the SGMLParser
-        superclass or the Tag superclass, depending on the method name."""
+        superclass or the Tag superclass, depending on the method label."""
         #print "__getattr__ called on %s.%s" % (self.__class__, methodName)
 
         if methodName.startswith('start_') or methodName.startswith('end_') \
@@ -1202,7 +1202,7 @@ class BeautifulStoneSoup(Tag, SGMLParser):
             raise AttributeError
 
     def isSelfClosingTag(self, name):
-        """Returns true iff the given string is the name of a
+        """Returns true iff the given string is the label of a
         self-closing tag according to this parser."""
         return self.SELF_CLOSING_TAGS.has_key(name) \
                or self.instanceSelfClosingTags.has_key(name)
@@ -1220,13 +1220,13 @@ class BeautifulStoneSoup(Tag, SGMLParser):
     def popTag(self):
         tag = self.tagStack.pop()
 
-        #print "Pop", tag.name
+        #print "Pop", tag.label
         if self.tagStack:
             self.currentTag = self.tagStack[-1]
         return self.currentTag
 
     def pushTag(self, tag):
-        #print "Push", tag.name
+        #print "Push", tag.label
         if self.currentTag:
             self.currentTag.contents.append(tag)
         self.tagStack.append(tag)
@@ -1236,7 +1236,7 @@ class BeautifulStoneSoup(Tag, SGMLParser):
         if self.currentData:
             currentData = u''.join(self.currentData)
             if (currentData.translate(self.STRIP_ASCII_SPACES) == '' and
-                not set([tag.name for tag in self.tagStack]).intersection(
+                not set([tag.label for tag in self.tagStack]).intersection(
                     self.PRESERVE_WHITESPACE_TAGS)):
                 if '\n' in currentData:
                     currentData = '\n'
@@ -1260,14 +1260,14 @@ class BeautifulStoneSoup(Tag, SGMLParser):
         instance of the given tag. If inclusivePop is false, pops the tag
         stack up to but *not* including the most recent instqance of
         the given tag."""
-        #print "Popping to %s" % name
+        #print "Popping to %s" % label
         if name == self.ROOT_TAG_NAME:
             return
 
         numPops = 0
         mostRecentTag = None
         for i in range(len(self.tagStack)-1, 0, -1):
-            if name == self.tagStack[i].name:
+            if name == self.tagStack[i].label:
                 numPops = len(self.tagStack)-i
                 break
         if not inclusivePop:
@@ -1302,21 +1302,21 @@ class BeautifulStoneSoup(Tag, SGMLParser):
         inclusive = True
         for i in range(len(self.tagStack)-1, 0, -1):
             p = self.tagStack[i]
-            if (not p or p.name == name) and not isNestable:
+            if (not p or p.label == name) and not isNestable:
                 #Non-nestable tags get popped to the top or to their
                 #last occurance.
                 popTo = name
                 break
             if (nestingResetTriggers is not None
-                and p.name in nestingResetTriggers) \
+                and p.label in nestingResetTriggers) \
                 or (nestingResetTriggers is None and isResetNesting
-                    and self.RESET_NESTING_TAGS.has_key(p.name)):
+                    and self.RESET_NESTING_TAGS.has_key(p.label)):
 
                 #If we encounter one of the nesting reset triggers
                 #peculiar to this tag, or we encounter another tag
                 #that causes nesting to reset, pop up to but not
                 #including that tag.
-                popTo = p.name
+                popTo = p.label
                 inclusive = False
                 break
             p = p.parent
@@ -1324,10 +1324,10 @@ class BeautifulStoneSoup(Tag, SGMLParser):
             self._popToTag(popTo, inclusive)
 
     def unknown_starttag(self, name, attrs, selfClosing=0):
-        #print "Start tag %s: %s" % (name, attrs)
+        #print "Start tag %s: %s" % (label, attrs)
         if self.quoteStack:
             #This is not a real tag.
-            #print "<%s> is not real!" % name
+            #print "<%s> is not real!" % label
             attrs = ''.join([' %s="%s"' % (x, y) for x, y in attrs])
             self.handle_data('<%s%s>' % (name, attrs))
             return
@@ -1348,16 +1348,16 @@ class BeautifulStoneSoup(Tag, SGMLParser):
         if selfClosing or self.isSelfClosingTag(name):
             self.popTag()
         if name in self.QUOTE_TAGS:
-            #print "Beginning quote (%s)" % name
+            #print "Beginning quote (%s)" % label
             self.quoteStack.append(name)
             self.literal = 1
         return tag
 
     def unknown_endtag(self, name):
-        #print "End tag %s" % name
+        #print "End tag %s" % label
         if self.quoteStack and self.quoteStack[-1] != name:
             #This is not a real end tag.
-            #print "</%s> is not real!" % name
+            #print "</%s> is not real!" % label
             self.handle_data('</%s>' % name)
             return
         self.endData()
@@ -1670,8 +1670,8 @@ class MinimalSoup(BeautifulSoup):
 
 class BeautifulSOAP(BeautifulStoneSoup):
     """This class will push a tag with only a single string child into
-    the tag's parent as an attribute. The attribute's name is the tag
-    name, and the value is the string child. An example should give
+    the tag's parent as an attribute. The attribute's label is the tag
+    label, and the value is the string child. An example should give
     the flavor of the change:
 
     <foo><bar>baz</bar></foo>
@@ -1686,7 +1686,7 @@ class BeautifulSOAP(BeautifulStoneSoup):
     out.
 
     I'm not sure how many people really want to use this class; let me
-    know if you do. Mainly I like the name."""
+    know if you do. Mainly I like the label."""
 
     def popTag(self):
         if len(self.tagStack) > 1:
@@ -1695,8 +1695,8 @@ class BeautifulSOAP(BeautifulStoneSoup):
             parent._getAttrMap()
             if (isinstance(tag, Tag) and len(tag.contents) == 1 and
                 isinstance(tag.contents[0], NavigableString) and
-                not parent.attrMap.has_key(tag.name)):
-                parent[tag.name] = tag.contents[0]
+                not parent.attrMap.has_key(tag.label)):
+                parent[tag.label] = tag.contents[0]
         BeautifulStoneSoup.popTag(self)
 
 #Enterprise class names! It has come to our attention that some people

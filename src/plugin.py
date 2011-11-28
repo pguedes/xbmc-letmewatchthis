@@ -1,4 +1,17 @@
 '''
+A module to support creating plugin facades for XBMC in a simplified programming environment.
+
+This module allows the plugin to be programmed has a set of handler functions that are registered
+via the decorators on this module. When a request comes in from XBMC, plugin.handle() can collect
+the parameters, map them to the correct handler function arguments, invoke it and use the results 
+to either play or show a listing in XBMC's GUI.
+
+Handler functions must return a PluginResult which is a container for a list of results, with a
+size (for progress indication) and a iterable of PluginMovieItem instances(or generator function)
+
+A PluginMovieItem has a label a plugin mode and a map of arguments to use to invoke the 
+corresponding handler function with.
+
 Created on Aug 7, 2010
 
 @author: pedro
@@ -20,32 +33,36 @@ class PluginMovieItem:
   __listItem = None
   def __init__(self, name, url, mode=None, extraArgs=None):
     """Create an item 
-    @param name: the name for this item
+    @param label: the label for this item
     @param url: the url to load this item
     @param mode: the mode for this link """
-    self.name = name
+    self.label = name
     self.url = url
     self.mode = mode or "ROOT"
     self.extraArgs = extraArgs
-    
-  def getLabels(self):
-    return { "title": self.name }
-    
+
+  def getMetadataLabels(self):
+    """returns the metadata labels to use in XBMC's GUI"""
+    return { "title": self.label }
+
   def isPlayable(self):
     return modeHandlers[self.mode].playable
-    
-  def getTitle(self):
-    return self.name
-  
+
+  def getLabel(self):
+    return self.label
+
+  def getLabels(self):
+    return {'title': self.label}
+
   def getPath(self):
     return self.url
-  
+
   def buildContextMenu(self):
     pass
-  
+
   def hasCover(self):
     return False;
-  
+
   def getCover(self):
     return "";
 
@@ -54,46 +71,46 @@ class PluginMovieItem:
 
   def getFanart(self):
     pass;
-    
+
   def getListItem(self):
     """Create a list item for XBMC for this PluginMovieItem 
     @return the list item for XBMC"""
-    if self.__listItem: 
+    if self.__listItem:
       return self.__listItem
 
     thumb = ""
     if self.hasCover():
-      thumb = pluginsupport._preChacheThumbnail(self.getCover(), "Loading cover for : '%s'" % self.name)
+      thumb = pluginsupport._preChacheThumbnail(self.getCover(), "Loading cover for : '%s'" % self.label)
 
-    self.__listItem = xbmcgui.ListItem(self.getTitle(), iconImage=thumb, thumbnailImage=thumb, path=self.getPath())
-    self.__listItem.setInfo(type="Video", infoLabels=self.getLabels())
+    self.__listItem = xbmcgui.ListItem(self.getLabel(), iconImage=thumb, thumbnailImage=thumb, path=self.getPath())
+    self.__listItem.setInfo(type="Video", infoLabels=self.getMetadataLabels())
 
     if self.hasFanart():
-      fanart = pluginsupport._preChacheThumbnail(self.getFanart(), "Loading fanart for : '%s'" % self.name)
+      fanart = pluginsupport._preChacheThumbnail(self.getFanart(), "Loading fanart for : '%s'" % self.label)
       self.__listItem.setProperty('fanart_image', fanart)
 
     if self.isPlayable():
       self.__listItem.setProperty('IsPlayable', 'true')
-      
+
     contextMenu = self.buildContextMenu()
-    if contextMenu: 
+    if contextMenu:
       self.__listItem.addContextMenuItems(contextMenu)
-    
+
     return self.__listItem
-     
+
   def getTargetUrl(self, action=None, extra=None):
     """Returns the url for this item to use by XBMC
     @param action: optional action to add to the url"""
     extra = extra or self.extraArgs
     if self.mode:
-      argsMap = {"url": self.url, "mode": str(self.mode), "name": self.name}
+      argsMap = {"url": self.url, "mode": str(self.mode), "label": self.label, "name": self.label}
       if action:
         argsMap['action'] = action
       if extra:
         for key, value in extra.iteritems():
           argsMap[key] = value
       return pluginsupport.encode(argsMap)
-    return self.url 
+    return self.url
 
 
 """A registry of mode handlers"""
@@ -137,10 +154,10 @@ def __isAction(arguments):
 def handle():
   """Handle an XBMC plugin request.
   This will get the appropriate handler function, execute it to get a PluginResult
-  then if they-re in normal flor, handle the result by either listing the items or playing them.""" 
+  then if they-re in normal flor, handle the result by either listing the items or playing them."""
   arguments = pluginsupport.getArguments()
   def __getArgument(arg):
-    if not arguments.has_key(arg): 
+    if not arguments.has_key(arg):
       return None
     val = arguments[arg]
     del arguments[arg]
@@ -148,17 +165,22 @@ def handle():
 
   if __isAction(arguments):
     action = __getArgument('action')
+    log.debug("invoking action '%s'" % action)
     actionHandlers[action].call(arguments)
   else:
     mode = __getArgument('mode') or "ROOT"
     handler = modeHandlers[mode]
+    log.debug("invoking mode %r handler with arguments %r" % (mode, arguments))
     result = handler.call(arguments)
+    log.debug("results from mode %r handler: %r" % (mode, result))
     if handler.playable:
+      log.debug("playing results for mode %r" % mode)
       pluginsupport.play(result.items)
     else:
+      log.debug("listing results for mode %r" % mode)
       pluginsupport.list(result, handler.getContentType(arguments))
     pluginsupport.done()
-    
+
 class HandlerWrapper:
   """A wrapper for handler functions that can map arguments from XBMC's request
   to the handler functions parameters"""
@@ -170,13 +192,13 @@ class HandlerWrapper:
     self.handlerFunction = handler
     self.contentType = contentType
     self.playable = playable
-    
+
   def call(self, params={}):
     """Invokes the handler function
     @param params: the invocation params from XBMC
     @return: the result of the invocation of the handler function"""
     return _executeOne(self.handlerFunction, params)
-  
+
   def getContentType(self, params):
     """Gets the content type for this handler
     @param params: the invocation params
@@ -188,7 +210,7 @@ class HandlerWrapper:
 
 def __mapArgs(functionArgs, pluginParams):
   '''Map the plugins invocation arguments to the handler function arguments
-  The arguments are matched by name
+  The arguments are matched by label
   @param functionArgs: The list of arguments the function requires
   @param pluginParams: the available params from the invocation of the plugin (url)
   @return: a dict of arguments to invoke the handler function with'''
@@ -206,8 +228,8 @@ def _executeOne(f, params={}):
   fargs = inspect.getargspec(f)[0]
   if not fargs:
     return f()
-  log.debug("Function has args: %s" % str(fargs)) 
+  log.debug("Function has args: %s" % str(fargs))
   args = __mapArgs(fargs, params)
-  log.debug("Dispatching call to function with args: %s" % str(args)) 
+  log.debug("Dispatching call to function with args: %s" % str(args))
   return f(**args)
 

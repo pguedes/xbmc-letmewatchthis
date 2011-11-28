@@ -36,155 +36,16 @@ x    trailer     : string (/home/user/trailer.avi)
 
 @author: pguedes
 '''
-import logging
-from utils.notification import getUserNotifier
-from os.path import getsize, exists
+import logging, re
 from unicodedata import normalize
-from searchers import imdb, tvdb
 from searchers.adapters import MetadataProvider
 from utils import settings
+from localcache import MetadataCache, MetadataKey
 
-import pickle, re, os, sys
-import xbmc, xbmcgui #@UnresolvedImport
-
-METADATA_PATH_ROOT = xbmc.translatePath(sys.argv[0])
-METADATA_PATH_FORMAT = "%s.metadata"
 TVSHOW_TYPE, MOVIES_TYPE, ANIME_TYPE = "tvseries", "movies", "anime"
 
 log = logging.getLogger('metadata')
 metadataLoader = MetadataProvider()
-
-def _getMetadataPath(type):
-  '''
-  Get the path to the metadata file of a type
-  @param type: the type of metadata file to load (tvseries, movies, or a tv show title for it's episodes file)
-  @return: file system path to the metadata cache file
-  '''
-  return os.path.join(_getMetadataRoot(), METADATA_PATH_FORMAT % type)
- 
-def _getMetadataRoot():
-  '''
-  Get the path to the root of the metadata files
-  @return: file system path to the root of the cache files (<plugin root>/cache/)
-  '''
-  return os.path.join(os.getcwd(), "cache")
- 
-def _readDictionary(file):
-  '''
-  Unpickle a dictionary from the file system
-  @param file: the file system path to load the file from
-  @return: the loaded dictionary
-  '''
-  if exists(file) and getsize(file) > 0:
-    log.debug("Loading dictionary from file '%s'" % file)
-    f = open(file)
-    try:
-      return pickle.load(f)
-    finally:
-      f.close()
-
-def _saveDictionary(file, dict):
-  f = open(file, "w")
-  try:
-    try:
-      log.debug("writing dictionary %s to file '%s'" % (dict, f))
-      pickle.dump(dict, f)
-    except:
-      log.exception("failed to write dictionary %s to file '%s'" % (dict, f))
-  finally:
-    f.close()
-
-class MetadataCache:
-  
-  class __impl:
-    
-    def __init__(self, entry):
-      self.__file = entry.getCachePath()
-      log.info("Loading metadata cache from file system: %s" % self.__file)
-      self.__cache = _readDictionary(self.__file)
-      if not self.__cache:
-        self.__cache = {}
-      log.debug("initted metadata cache")
-      
-    def save(self):
-      '''
-      Persist the cache to the file system.
-      Will create the metadata root directory if it doesn't exist.
-      '''
-      metaroot = _getMetadataRoot()
-      if not os.path.isdir(metaroot):
-        log.info("Creating initial cache dir: %s" % metaroot)
-        os.makedirs(metaroot)
-      f = open(self.__file, "w")
-      try:
-        log.debug("saving metadata cache=%s to file '%s'" % (self.__cache, f))
-        pickle.dump(self.__cache, f)
-      finally:
-        f.close()
-  
-    def contains(self, entry, lookupEpisodes=True):
-      '''
-      Test if an item is in cache
-      For tv shows, returns true if a .tvmetadata-<TVSHOW>.cache file exists
-      @param entry: the MetadataKey to check for 
-      '''
-      contained = self.__cache.has_key(entry.getKey())
-      if not contained and entry.isTVShow() and lookupEpisodes:
-        episodesFile = entry.getEpisodeCachePath()
-        log.debug("Looking for cached episodes for '%s' file: %s" % (entry.getKey(), episodesFile))
-        contained = exists(episodesFile) and getsize(episodesFile) > 0
-      log.debug("Checking cache for '%s' returning %s" % (entry.getKey(), str(contained)))
-      return contained
-  
-    def lookup(self, entry):
-      '''
-      Lookup an entry in cache
-      @param entry: MetadataKey to lookup
-      @return: the Metadata entry in cache or None if not found
-      '''
-      log.debug("looking up cached metadata for entry '%s'" % entry.getKey())
-      if self.__cache.has_key(entry.getKey()):
-        return self.__cache[entry.getKey()]
-      if entry.isTVShow():
-        episodesFile = entry.getEpisodeCachePath()
-        if exists(episodesFile) and getsize(episodesFile) > 0:
-          log.debug("Loading cached tv show '%s' data in episodes file: %s" % (entry.getKey(), episodesFile))
-          entries = _readDictionary(episodesFile)
-          if entries.has_key(entry.getKey()):
-            return entries[entry.getKey()]
-      log.debug("entry '%s' not found in cache" % entry.getKey())
-      return None
-    
-    def refresh(self, url, metadata, persist=False):
-      '''
-      Refresh an entry with new metadata. Optionally persist to file system.
-      @param url: the url of the entry to update
-      @param metadata: the metadata to update with
-      @param persist: if the update should be persisted to the file system (default False)
-      '''
-      log.debug("Refreshing metadata for url '%s': %s" % (url, metadata))
-      copy = Metadata().copy(metadata)
-      self.__cache[url] = copy
-      if persist:
-        self.save()
-      
-  __instance = None # singleton instance of the cache
-      
-  def __init__(self, type):
-    '''
-    Return a singleton instance (unpickle once)
-    '''
-    if MetadataCache.__instance is None:
-      MetadataCache.__instance = MetadataCache.__impl(type)
-
-    self.__dict__['_MetadataCache__instance'] = MetadataCache.__instance
-
-  def __getattr__(self, name):
-    return getattr(self.__instance, name)
-
-  def __setattr__(self, name, value):
-    return setattr(self.__instance, name, value)
-
 
 class Metadata:
   '''
@@ -204,12 +65,12 @@ class Metadata:
       self.cover(cover)
     if len(plot) > 0:
       self.plot(plot)
-  
+
   def __setitem__(self, key, value):
     if not self.__infoLabels:
       self.__infoLabels = {}
     self.__infoLabels[key] = value
-    
+
   def __set(self, label, value):
     '''
     Set infolabel value and return self to be usable as a builder
@@ -253,7 +114,7 @@ class Metadata:
     '''
     self.__infoLabels = other.getLabels().copy()
     return self
-    
+
   def code(self, code):
     '''
     Set the code for this metadata
@@ -270,7 +131,7 @@ class Metadata:
     if not self.__infoLabels.has_key("code"):
       return None
     return self.__infoLabels["code"]
-   
+
   def genre(self, genre):
     '''
     Set the genre for this metadata
@@ -278,7 +139,7 @@ class Metadata:
     @return: this Metadata instance
     '''
     return self.__setUnicode("genre", genre)
-   
+
   def year(self, year):
     '''
     Set the year for this metadata
@@ -302,7 +163,7 @@ class Metadata:
     @return: this Metadata instance
     '''
     return self.__set("studio", studio)
-   
+
   def rating(self, rating):
     '''
     Set the rating for this metadata
@@ -318,7 +179,7 @@ class Metadata:
     @return: this Metadata instance
     '''
     return self.__set("votes", votes)
-  
+
   def plotoutline(self, plot):
     '''
     Set the plot for this metadata
@@ -326,7 +187,7 @@ class Metadata:
     @return: this Metadata instance
     '''
     return self.__setUnicode("plotoutline", plot, True)
-  
+
   def plot(self, plot):
     '''
     Set the plot for this metadata
@@ -390,7 +251,7 @@ class Metadata:
     @return: this Metadata instance
     '''
     return self.__setUnicode("tvshowtitle", show)
-   
+
   def tvshowid(self, show):
     '''
     Set the tvshow id for this metadata
@@ -398,7 +259,7 @@ class Metadata:
     @return: this Metadata instance
     '''
     return self.__set("tvshowid", show)
-   
+
   def premiered(self, premiered):
     '''
     Set the premiered for this metadata
@@ -433,13 +294,13 @@ class Metadata:
     Check if the fanart label has been set
     '''
     return self.__infoLabels.has_key("fanart")
-   
+
   def getFanart(self):
     '''
     Get the fanart value for this metadata
     '''
     return self.__infoLabels['fanart']
-   
+
   def fanart(self, fanart):
     '''
     Set the fanart link for this metadata
@@ -455,7 +316,7 @@ class Metadata:
     @return: this Metadata instance
     '''
     return self.__set("season", season)
-  
+
   def getCover(self):
     '''
     Get the cover.
@@ -478,13 +339,13 @@ class Metadata:
     Return the collected info labels in this metadata
     '''
     return self.__infoLabels
-   
+
   def hasCode(self):
     '''
     Check if this metadata is linked to an online metadata db
     '''
     return self.__infoLabels.has_key("code")
-  
+
   def isEmpty(self):
     '''
     Check if this metadata contains any valuable data
@@ -494,138 +355,10 @@ class Metadata:
       if v != "" and k != "title":
         return False
     return True
-  
+
   def __str__(self):
     return "Metadata: %s" % str(self.__infoLabels)
 
-class MetadataKey:
-  useTvShowCache = False
-  '''
-  A key to the metadata database, translates urls
-  '''
-  def __init__(self, url, title=None):
-    '''
-    Build a new key
-    @param url: the url to map
-    @param title: the title to use for searching, if needed
-    '''
-    if url.find('http://') < 0:
-      url = "http://tvshack.cc" + url
-    if title is not None and title.find('(') > 0:
-      title = re.sub("\(.+?\)", "", title)  
-    self.__title = title;
-    self.__url = url
-    self.__key = re.compile("http://tvshack.cc/(.+?/.+?)/").findall(self.__url)[0]
-    
-    if self.__key.startswith("tv"):
-      self.__type = TVSHOW_TYPE
-    elif self.__key.startswith("anime"):
-      self.__type = ANIME_TYPE
-    else:
-      self.__type = MOVIES_TYPE
-      
-    if self.isEpisode():
-      season, episode = self.getSeasonAndEpisode()
-      self.__key = self.getEpisodeKey(season, episode)
-
-  def getEpisodeKey(self, season, episode):
-    '''
-    Get the episode key into the metadata
-    @param season: the season for the key
-    @param episode: the episode for the key
-    @return: the episode key (e.g: tv/Dexter/S2E5)
-    '''
-    return "%s/S%sE%s" % (self.__key, season, episode)
-  
-  def getEpisodeCachePath(self):
-    '''
-    Get the path to the episodes metadata cache
-    @attention: only applies to tvshow items, otherwise use getCachePath
-    @return: full file system path to the episodes cache file
-    '''
-    if self.isTVShow():
-      return _getMetadataPath(self.__key.replace('/', '-'))
-  
-  def setUseTVShowCache(self, active=True):
-    self.useTvShowCache = active
-    return self
-  
-  def getCachePath(self):
-    '''
-    Get the path to the metadata cached database on the file system.
-    This will be video.metadata or tv.metadata or tv/_Till_Death.metadata
-    @return: full file system path to the cache file for this entry
-    '''
-    if self.useTvShowCache:
-      return self.getEpisodeCachePath()
-    file = '-'.join(self.__key.split('/')[:-1])
-    return _getMetadataPath(file)
-  
-  def getParentKey(self):
-    '''
-    For episodes returns the MetadataKey for the tvshow, else None
-    '''
-    if self.isEpisode():
-      parentUrl = re.compile("(http://tvshack.cc/.+?/.+?/)").findall(self.__url)[0]
-      return MetadataKey(parentUrl)
-
-  def getKey(self):
-    '''
-    Get the key string
-    '''
-    return self.__key
-   
-  def getSeasonAndEpisode(self):
-    '''
-    Attempt to grab the season and episode from the tvshack.cc url
-    '''
-    return re.compile("http://tvshack.cc/.+?/.+?/season_(.+?)/episode_(.+?)/").findall(self.__url)[0]
-  
-  def isEpisode(self):
-    '''
-    Check if this key is for an tv show episode
-    @return: True if this is of type tvshow and the url of depth > 4
-    '''
-    return self.__type == TVSHOW_TYPE and len(self.__url.split('/')) > 6
-
-  def isMovie(self):
-    '''Check if this key is of type movies
-    @return: True if this is of type movies'''
-    return self.__type == MOVIES_TYPE
-  
-  def isAnime(self):
-    '''Check if this key is of type anime
-    @return: True if this is of type anime'''
-    return self.__type == ANIME_TYPE
-  
-  def isTVShow(self):
-    '''
-    Check if this key is of type tvshow
-    @return: True if this is of type tvshow and the url of depth <= 4
-    '''
-    return self.__type == TVSHOW_TYPE and len(self.__url.split('/')) <= 6
-
-  def getName(self):
-    '''
-    Get the cleaned name from this key
-    @return: the second part of the key after removing numbers and _ 
-    '''
-    if self.__title:
-      return self.__title
-    name = self.__key.split('/')[1]
-    name = re.sub("__[0-9]+?_", " ", name).replace('_', ' ')
-    if name.find('(') > 0:
-      name = re.sub("\(.+?\)", "", name)
-    return name
-  
-  def getType(self):
-    '''
-    Get the type for this key (tvshow, movies or episodes)
-    '''
-    return self.__type
-  
-  def __str__(self):
-    return "key='%s'; url='%s'; name='%s', type=%s" % (self.__key, self.__url, self.getName(), self.__type)
 
 def _smart_unicode(s):
   '''
@@ -651,78 +384,77 @@ def _smart_unicode(s):
   return s
 
 def flushCache(url):
-  MetadataCache(MetadataKey(url)).save()
+    MetadataCache(MetadataKey(url)).save()
 
 def get(url, plot="", cover="", queryOnlineDb=False, bypassCache=False, title=None, tvshow=None, persistUpdates=True):
-  '''Get the metadata for an url.
-  If possible, get the cached metadata, otherwise, query IMDB/THETVDB for it
-  If this fails, return default metadata built with what is available from tv shack
-  
-  Will try to return from cache and if not possible will refresh cache with freshly built metadata
-  
-  A metadata key is in the format: <type>/<title> e.g: tv/How_I_met_your_mother
-  
-  @param url: the url to load metadata for
-  @param plot: fallback plot to build default metadata with (default "")
-  @param cover: fallback cover to build default metadata with (default "")
-  @param queryOnlineDb: if we should search for items not in cache (default False)
-  @param bypassCache: if we should bypass cache (to force searching) (default False)
-  @param title: fallback title to build default metadata with (default None)
-  @param tvshow: title of the tvshow (default None)
-  @return: metadata for the url
-  '''
-  entry = MetadataKey(url, title)
-  if entry.isTVShow() and tvshow:
-    entry.setUseTVShowCache()
-
-  log.debug("Created key for url: %s, %s" % (url, str(entry)))
-  cache = MetadataCache(entry)
-  log.debug("Cache loaded: %s" % id(cache))
-  log.debug("Querying cache for entry: %s" % entry)
-  cached = cache.lookup(entry)
-  # only override cache if query is not disabled
-  bypassCache = bypassCache and not settings.isSet("metadata-query-skip")
-  if not bypassCache and cached is not None:
-    if not cache.contains(entry, False):
-      log.debug("Updating show cache from episodes cache...%s" % str(entry.getKey()))
-      cache.refresh(entry.getKey(), cached, persist=True)
-    #log.debug("Returning from cache...%s" % str(cached))      
-    return cached
-  
-  log.debug("Not returning from cache... building new...")
-  # build default metadata
-  metadata = Metadata(entry.getName(), plot, cover)
-  # coz episodes need more info to load metadata
-  if entry.isEpisode():
-    seasonNumber, episodeNumber = entry.getSeasonAndEpisode()
-    metadata.season(seasonNumber).episode(episodeNumber)
-    if tvshow:
-      metadata.tvshow(tvshow.getTitle()).tvshowid(tvshow.getId()).cover(tvshow.getCover())
-    elif cached:
-      tvshowid = cached.getTvShowId()
-      tvshowcover = cached.getCover()
-      if not tvshowid or not tvshowcover:
-        # look for the parent entry and try to load it from there
-        tvshowentry = entry.getParentKey()
-        tvshowmeta = cache.lookup(tvshowentry)
-        tvshowid = tvshowmeta.getId() or tvshowid
-        tvshowcover = tvshowmeta.getCover()
-      log.info("Decorating with cached data, tvshowid = %s" % str(tvshowid))
-      metadata.tvshowid(tvshowid).cover(tvshowcover)
-      
-  if queryOnlineDb and not settings.isSet("metadata-query-skip"):
-    try:
-      if entry.isMovie() or entry.isTVShow():
-        dbid = metadataLoader.search(entry)
-        if dbid:
-          log.info("Loading metadata for '%s'" % dbid)
-          metadataLoader.load(entry, metadata.code(dbid))
-      elif entry.isEpisode():
-        metadataLoader.load(entry, metadata)
-    except:
-      log.exception("Querying metadata failed")
+    '''Get the metadata for an url.
+    If possible, get the cached metadata, otherwise, query IMDB/THETVDB for it
+    If this fails, return default metadata built with what is available from tv shack
     
-  # update the cache
-  if not metadata.isEmpty():
-    cache.refresh(entry.getKey(), metadata, persistUpdates)
-  return metadata
+    Will try to return from cache and if not possible will refresh cache with freshly built metadata
+    
+    A metadata key is in the format: <type>/<title> e.g: tv/How_I_met_your_mother
+    
+    @param url: the url to load metadata for
+    @param plot: fallback plot to build default metadata with (default "")
+    @param cover: fallback cover to build default metadata with (default "")
+    @param queryOnlineDb: if we should search for items not in cache (default False)
+    @param bypassCache: if we should bypass cache (to force searching) (default False)
+    @param title: fallback title to build default metadata with (default None)
+    @param tvshow: title of the tvshow (default None)
+    @return: metadata for the url'''
+    entry = MetadataKey(url, title)
+    if entry.isTVShow() and tvshow:
+        entry.setUseTVShowCache()
+
+    log.debug("Created key for url: %s, %s" % (url, str(entry)))
+    cache = MetadataCache(entry)
+    log.debug("Cache loaded: %s" % id(cache))
+    log.debug("Querying cache for entry: %s" % entry)
+    cached = cache.lookup(entry)
+    # only override cache if query is not disabled
+    bypassCache = bypassCache and not settings.isSet("metadata-query-skip")
+    if not bypassCache and cached is not None:
+        if not cache.contains(entry, False):
+            log.debug("Updating show cache from episodes cache...%s" % str(entry.getKey()))
+            cache.refresh(entry.getKey(), cached, persist=True)
+        #log.debug("Returning from cache...%s" % str(cached))      
+        return cached
+
+    log.debug("Not returning from cache... building new...")
+    # build default metadata
+    metadata = Metadata(entry.getName(), plot, cover)
+    # coz episodes need more info to load metadata
+    if entry.isEpisode():
+        seasonNumber, episodeNumber = entry.getSeasonAndEpisode()
+        metadata.season(seasonNumber).episode(episodeNumber)
+        if tvshow:
+            metadata.tvshow(tvshow.getTitle()).tvshowid(tvshow.getId()).cover(tvshow.getCover())
+        elif cached:
+            tvshowid = cached.getTvShowId()
+            tvshowcover = cached.getCover()
+            if not tvshowid or not tvshowcover:
+                # look for the parent entry and try to load it from there
+                tvshowentry = entry.getParentKey()
+                tvshowmeta = cache.lookup(tvshowentry)
+                tvshowid = tvshowmeta.getId() or tvshowid
+                tvshowcover = tvshowmeta.getCover()
+            log.info("Decorating with cached data, tvshowid = %s" % str(tvshowid))
+            metadata.tvshowid(tvshowid).cover(tvshowcover)
+
+    if queryOnlineDb and not settings.isSet("metadata-query-skip"):
+        try:
+            if entry.isMovie() or entry.isTVShow():
+                dbid = metadataLoader.search(entry)
+                if dbid:
+                    log.info("Loading metadata for '%s'" % dbid)
+                    metadataLoader.load(entry, metadata.code(dbid))
+            elif entry.isEpisode():
+                metadataLoader.load(entry, metadata)
+        except:
+            log.exception("Querying metadata failed")
+
+    # update the cache
+    if not metadata.isEmpty():
+        cache.refresh(entry.getKey(), metadata, persistUpdates)
+    return metadata

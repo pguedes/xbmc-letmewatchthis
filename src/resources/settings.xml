@@ -20,5 +20,9 @@
     <setting id="megavideouser" type="text" label="30101" default="" />
     <setting id="megavideopassword" type="text" label="30102" default="" />
   </category>
+  <category label="putlocker">
+    <setting id="putlocker-user" type="text" label="putlocker-username" default="" />
+    <setting id="putlocker-pass" type="text" label="putlocker-password" default="" />
+  </category>
 </settings>
 

@@ -2,10 +2,10 @@
 import logging.config, os, sys
 configRoot = os.path.join(os.getcwd(), "resources", "logging.conf")
 try:
-  logging.config.fileConfig(configRoot)
+    logging.config.fileConfig(configRoot)
 except:
-  logging.basicConfig()
-  logging.getLogger('root').exception('Failed to initialize logging... falling back to defaults.')
+    logging.basicConfig()
+    logging.getLogger('root').exception('Failed to initialize logging... falling back to defaults.')
 
 # Add the lib dir to path  
 sys.path.append(os.path.join(os.getcwd(), 'lib'))
@@ -17,9 +17,9 @@ sys.path.append(os.path.join(os.getcwd(), 'lib'))
 import letmewatchthis, plugin
 
 log = logging.getLogger("root")
-log.info("calling with args: %s"%str(sys.argv))
+log.info("calling with args: %s" % str(sys.argv))
 
 try:
-  plugin.handle()
+    plugin.handle()
 except:
-  log.exception("Failed to handle request")
+    log.exception("Failed to handle request")

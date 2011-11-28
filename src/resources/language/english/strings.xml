@@ -16,4 +16,7 @@
     <string id="general">General</string>
     <string id="metadata">Metadata</string>
     <string id="megavideo">Megavideo</string>
+    <string id="putlocker">PutLocker</string>
+    <string id="putlocker-username">PutLocker username:</string>
+    <string id="putlocker-password">PutLocker password:</string>
 </strings>
