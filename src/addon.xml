@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="video.letmewatchthis" version="0" name="1channel.ch" provider-name="Pedro Guedes, guedes.emigra@gmail.com">
-  <extension point="xbmc.python.pluginsource" library="default.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary>An add-on to view content from 1channel.ch</summary>
-    <description>This add-on allows to navigate the content made available by the
-      1channel.ch website, while making it look nicely integrated with XBMC's UI.</description>
-    <disclaimer>Please configure this add-on's preferences. If you have space issues, deleting
-      the .cache folder may be a good first option (will reload)</disclaimer>
-    <platform>all</platform>
-  </extension>
+<addon id="plugin.video.primewire" version="0.1" name="PrimeWire" provider-name="Pedro Guedes, guedes.emigra@gmail.com">
+
+    <requires>
+        <import addon="xbmc.python" version="2.0"/>
+        <import addon="script.module.metahandler" version="1.0.4"/>
+    </requires>
+
+    <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+    </extension>
+
+    <extension point="xbmc.addon.metadata">
+        <summary>An add-on to view content from primewire.ag</summary>
+        <description>This add-on allows to navigate the content made available by the
+            primewire.ag website, while making it look nicely integrated with XBMC's UI.
+        </description>
+        <disclaimer>Please configure this add-on's preferences. If you have space issues, deleting
+            the .cache folder may be a good first option (will reload)
+        </disclaimer>
+        <platform>all</platform>
+    </extension>
+
 </addon>

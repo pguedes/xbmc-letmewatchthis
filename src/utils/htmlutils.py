@@ -156,7 +156,7 @@ def setupCookiesForRequest(cookiesFile):
 def getTarget(url):
     target = url
     if url.find('http://') < 0:
-        target = "http://www.1channel.ch" + url
+        target = "http://www.primewire.ag" + url
     return target
 
 def cleanHtml(html):
