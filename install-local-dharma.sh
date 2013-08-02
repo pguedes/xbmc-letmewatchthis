@@ -1,4 +1,4 @@
 #!/bin/bash
-rm -rf ~/.xbmc/addons/plugin.video.letmewatchthis/*
-cp -r src/* ~/.xbmc/addons/plugin.video.letmewatchthis
-mv ~/.xbmc/addons/plugin.video.letmewatchthis/resources/logging-debug.conf ~/.xbmc/addons/plugin.video.letmewatchthis/resources/logging.conf
+rm -rf ~/.xbmc/addons/plugin.video.primewire/*
+cp -r src/* ~/.xbmc/addons/plugin.video.primewire
+mv ~/.xbmc/addons/plugin.video.primewire/resources/logging-debug.conf ~/.xbmc/addons/plugin.video.primewire/resources/logging.conf

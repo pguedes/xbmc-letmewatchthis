@@ -24,6 +24,10 @@ from utils import pluginsupport
 log = logging.getLogger("plugin")
 metadataFacade = MetaData()
 
+class PluginContentType:
+    MOVIES = 'movies'
+    TVSHOWS = 'tvshows'
+    EPISODES = 'episodes'
 
 class PluginResult:
     def __init__(self, size, items):
@@ -68,9 +72,7 @@ class PluginMovieItem:
         @return: searchable media type
         """
         translation = {"tvshows": "tvshow", "movies": "movie", "episodes": "episode"}
-        print "xbmc content type is %s" % xbmc_content_type
         if xbmc_content_type in translation:
-            print "translation is %s" % translation[xbmc_content_type]
             return translation[xbmc_content_type]
 
     def getPath(self):
@@ -87,7 +89,6 @@ class PluginMovieItem:
 
         # get the current mode from the plugin's invocation arguments
         args = pluginsupport.getArguments()
-        print args
 
         contentTypeOfCurrentList = None
         if args:
@@ -199,6 +200,26 @@ def __isAction(arguments):
   @return true if this is an action request, false otherwise"""
     return arguments.has_key('action') and arguments['action'] not in normalFlowActions
 
+
+def initialize(addonId, implementationModule):
+    import logging.config
+    import os
+    import xbmcaddon
+    import importlib
+
+    # get the path to the addon
+    addon = xbmcaddon.Addon(addonId)
+    addonPath = addon.getAddonInfo('path')
+
+    # configure logging
+    configRoot = os.path.join(addonPath, "resources", "logging.conf")
+    try:
+        logging.config.fileConfig(configRoot)
+    except:
+        logging.basicConfig()
+        logging.getLogger('root').exception('Failed to initialize logging... falling back to defaults.')
+
+    importlib.import_module(implementationModule)
 
 def handle():
     """
